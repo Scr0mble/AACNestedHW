@@ -154,7 +154,7 @@ public class AAC implements ActionListener {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		new AAC("AACMappings.txt");
+		new AAC("AACNestedHW/AACMappings.txt");
 	}
 
 	/**

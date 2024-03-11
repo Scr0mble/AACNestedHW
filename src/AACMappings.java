@@ -1,17 +1,62 @@
+import structures.AssociativeArray;
 import structures.KeyNotFoundException;
 import structures.NullKeyException;
+import java.io.*;
 
 public class AACMappings {
   /* Fields */
 
   String filename;
-  AACCategory cat;
+  AACCategory cur;
+  AssociativeArray<String, AACCategory> cats;
+  FileInputStream input;
+  InputStreamReader reader;
 
   /* Constructors */
 
   public AACMappings(String filename) {
     this.filename = filename;
-    this.cat = new AACCategory("Default");
+    this.cur = new AACCategory("Default");
+    this.cats = new AssociativeArray<String, AACCategory>();
+    try {
+      this.cats.set("home", this.cur);
+    } catch (NullKeyException e) {
+      e.printStackTrace();
+    }
+    try {
+      input = new FileInputStream(filename);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+    reader = new InputStreamReader(input);
+    int c;
+    char curChar;
+    String fileLocCombo = "";
+    try {
+      while ((curChar = (char) reader.read()) != (char) -1) {
+        if (curChar != '\n') {
+          if (curChar != '>') {
+            fileLocCombo = fileLocCombo + curChar;
+          }
+        } else {
+          String[] parsdLoc = fileLocCombo.split(" ", 2);
+          fileLocCombo = "";
+          this.add("AACNestedHW/" + parsdLoc[0], parsdLoc[1]);
+          if(parsdLoc[0].contains(parsdLoc[1])) {
+            this.cats.set(parsdLoc[1], new AACCategory(parsdLoc[1]));
+            this.cur = this.cats.get(parsdLoc[1]);
+          }
+        }
+      }
+      reader.close();
+      input.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (NullKeyException e) {
+      e.printStackTrace();
+    } catch (KeyNotFoundException e) {
+      e.printStackTrace();
+    }
   }
 
   /* Methods */
@@ -22,7 +67,7 @@ public class AACMappings {
    * @throws NullKeyException 
    */
   public void add(String imageLoc, String text) throws NullKeyException {
-    this.cat.addItem(imageLoc, text);
+    this.cur.addItem(imageLoc, text);
     return;
   } //addItem
 
@@ -31,7 +76,7 @@ public class AACMappings {
    * @return
    */
   public String getCurrentCategory() {
-    return this.cat.name;
+    return this.cur.getCategory();
   } //getCategory
 
   /**
@@ -39,7 +84,7 @@ public class AACMappings {
    * @return
    */
   public String[] getImageLocs() {
-    return this.cat.getImages();
+    return this.cur.getImages();
   } //getImages()
 
   /**
@@ -49,7 +94,7 @@ public class AACMappings {
    * @throws KeyNotFoundException 
    */
   public String getText(String imageLoc) throws KeyNotFoundException {
-    return this.cat.getText(imageLoc);
+    return this.cur.getText(imageLoc);
   } //getText()
 
   /**
@@ -65,6 +110,11 @@ public class AACMappings {
    * Resets the current category of the AAC back to the default category
    */
   public void reset() {
+    try {
+      this.cur = this.cats.get("");
+    } catch (KeyNotFoundException e) {
+      e.printStackTrace();
+    }
     return;
   }
 
