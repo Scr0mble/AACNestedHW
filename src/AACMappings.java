@@ -16,38 +16,43 @@ public class AACMappings {
 
   public AACMappings(String filename) {
     this.filename = filename;
-    this.cur = new AACCategory("Default");
+    this.cur = new AACCategory("");
     this.cats = new AssociativeArray<String, AACCategory>();
+    //Tries to set the first AACCategory
     try {
       this.cats.set("home", this.cur);
     } catch (NullKeyException e) {
       e.printStackTrace();
     }
+    //tries to open file
     try {
       input = new FileInputStream(filename);
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
     reader = new InputStreamReader(input);
-    int c;
     char curChar;
     String fileLocCombo = "";
+    //maps all the stuff
     try {
       while ((curChar = (char) reader.read()) != (char) -1) {
+        // this part constructs the string that is parsed to form the mappings
         if (curChar != '\n') {
           if (curChar != '>') {
             fileLocCombo = fileLocCombo + curChar;
-          }
+          } //if
         } else {
+          // this part actually does the mapping part
           String[] parsdLoc = fileLocCombo.split(" ", 2);
           fileLocCombo = "";
           this.add("AACNestedHW/" + parsdLoc[0], parsdLoc[1]);
+          // this part is supposed to recognize categories by comparing their name to their location, does not work right
           if(parsdLoc[0].contains(parsdLoc[1])) {
             this.cats.set(parsdLoc[1], new AACCategory(parsdLoc[1]));
             this.cur = this.cats.get(parsdLoc[1]);
-          }
-        }
-      }
+          } //if
+        } // if else
+      } // while
       reader.close();
       input.close();
     } catch (IOException e) {
@@ -66,8 +71,12 @@ public class AACMappings {
    * @param text
    * @throws NullKeyException 
    */
-  public void add(String imageLoc, String text) throws NullKeyException {
-    this.cur.addItem(imageLoc, text);
+  public void add(String imageLoc, String text) {
+    try {
+      this.cur.addItem(imageLoc, text);
+    } catch (NullKeyException e) {
+      e.printStackTrace();
+    }
     return;
   } //addItem
 
@@ -93,8 +102,13 @@ public class AACMappings {
    * @return
    * @throws KeyNotFoundException 
    */
-  public String getText(String imageLoc) throws KeyNotFoundException {
-    return this.cur.getText(imageLoc);
+  public String getText(String imageLoc) {
+    try {
+      return this.cur.getText(imageLoc);
+    } catch (KeyNotFoundException e) {
+      e.printStackTrace();
+      return "";
+    }
   } //getText()
 
   /**
