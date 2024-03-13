@@ -145,7 +145,7 @@ public class AACMappings {
     this.cur = this.home;
 
     try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true));
+      BufferedWriter writer = new BufferedWriter(new FileWriter(filename, false));
 
       for(int i = 0; i < this.cats.size() - 1; i++) {
         String[] locs = this.getImageLocs();
