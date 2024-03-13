@@ -86,6 +86,22 @@ public class AssociativeArray<K, V> {
   // +----------------+
 
   /**
+   * Converts the array to a string in a format readable by AACMappings
+   * @return
+   */
+  public String toFile() {
+    if (this.pairs[0] == null) {
+      return "{}";
+    }
+    String arrString = "";
+    for (int i = 0; i < this.size; i++) {
+      arrString = arrString + this.pairs[i].key + this.pairs[i].value + '\n';
+    }
+    arrString = arrString + "\b";
+    return arrString;
+  } // toFile()
+
+  /**
    * returns an array of strings that each contain a key from the AssociativeArray
    * @return
    */
