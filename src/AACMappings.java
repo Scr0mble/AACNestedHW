@@ -41,7 +41,7 @@ public class AACMappings {
           this.add(parsdLoc[0], parsdLoc[1]);
           this.cur = this.cats.get(parsdLoc[1]);
         } else {
-          this.add(parsdLoc[0], parsdLoc[1]);
+          this.add(parsdLoc[0].substring(1), parsdLoc[1]);
         } // if else
       } // while
       lreader.close();
@@ -102,11 +102,12 @@ public class AACMappings {
   public String getText(String imageLoc) {
     if(this.getCurrentCategory().equals("")) {
       try {
-        this.cur = this.cats.get(imageLoc);
+        this.cur = this.cats.get(this.home.getText(imageLoc));
+        return this.home.getText(imageLoc);
       } catch (KeyNotFoundException e) {
         e.printStackTrace();
+        return "";
       }
-      return "";
     } else {
       try {
         return this.cur.getText(imageLoc);
@@ -141,12 +142,26 @@ public class AACMappings {
    * @param filename
    */
   public void writeToFile(String filename) {
+    this.cur = this.home;
+
     try {
       BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true));
-      for(int i = 0; i < this.cats.size(); i++) {
-        
-      }
-    } catch (IOException e) {
+
+      for(int i = 0; i < this.cats.size() - 1; i++) {
+        String[] locs = this.getImageLocs();
+        writer.write(locs[i] + " " + this.home.getText(locs[i]) + '\n');
+        this.cur = this.cats.get(this.getText(locs[i]));
+
+        for(int j = 0; j < this.cur.picTextPair.size(); j++) {
+          String[] subLocs = this.getImageLocs();
+          writer.write(">" + subLocs[j] + " " + this.getText(subLocs[j]) + '\n');
+        } //inside for loop
+
+        this.cur = this.home;
+      } //outside for loop
+
+      writer.close();
+    } catch (IOException | KeyNotFoundException e) {
       e.printStackTrace();
     }
     return;

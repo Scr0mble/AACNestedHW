@@ -7,7 +7,7 @@ public class AACCategory {
   /* Fields */
 
   String name;
-  private AssociativeArray<String, String> picTextPair;
+  AssociativeArray<String, String> picTextPair;
 
   /* Constructors */
 
