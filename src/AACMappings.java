@@ -36,7 +36,6 @@ public class AACMappings {
         fileLocCombo = lreader.nextLine();
         String[] parsdLoc = fileLocCombo.split(" ", 2);
         if (!parsdLoc[0].contains(">")) {
-          System.out.println("True");
           this.cats.set(parsdLoc[1], new AACCategory(parsdLoc[1]));
           this.cur = this.home;
           this.add(parsdLoc[0], parsdLoc[1]);
@@ -101,11 +100,20 @@ public class AACMappings {
    * @throws KeyNotFoundException
    */
   public String getText(String imageLoc) {
-    try {
-      return this.cur.getText(imageLoc);
-    } catch (KeyNotFoundException e) {
-      e.printStackTrace();
+    if(this.getCurrentCategory().equals("")) {
+      try {
+        this.cur = this.cats.get(imageLoc);
+      } catch (KeyNotFoundException e) {
+        e.printStackTrace();
+      }
       return "";
+    } else {
+      try {
+        return this.cur.getText(imageLoc);
+      } catch (KeyNotFoundException e) {
+        e.printStackTrace();
+        return "";
+      }
     }
   } // getText()
 
@@ -133,6 +141,14 @@ public class AACMappings {
    * @param filename
    */
   public void writeToFile(String filename) {
+    try {
+      BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true));
+      for(int i = 0; i < this.cats.size(); i++) {
+        
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     return;
   }
 }
