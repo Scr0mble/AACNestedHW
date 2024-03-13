@@ -1,6 +1,7 @@
 import javax.swing.JFrame; 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import structures.KeyNotFoundException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton; 
 
@@ -71,15 +72,15 @@ public class AAC implements ActionListener {
 		JPanel panel1 = new JPanel();
 		panel1.setLayout(new GridLayout(1,3));
 
-		JButton home = new JButton(new ImageIcon("AACNestedHW/img/home.png"));
+		JButton home = new JButton(new ImageIcon("img/home.png"));
 		home.setActionCommand("");
 		home.addActionListener(this);
 		panel1.add(home);
-		JButton save = new JButton(new ImageIcon("AACNestedHW/img/save.png"));
+		JButton save = new JButton(new ImageIcon("img/save.png"));
 		save.setActionCommand("save");
 		save.addActionListener(this);
 		panel1.add(save);
-		JButton add = new JButton(new ImageIcon("AACNestedHW/img/plus.png"));
+		JButton add = new JButton(new ImageIcon("img/plus.png"));
 		add.setActionCommand("add");
 		add.addActionListener(this);
 		panel1.add(add);
@@ -152,7 +153,7 @@ public class AAC implements ActionListener {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
-		new AAC("AACNestedHW/AACMappings.txt");
+		new AAC("AACMappings.txt");
 	}
 
 	/**
@@ -195,7 +196,12 @@ public class AAC implements ActionListener {
 		}
 		else {
 			if(this.aacMappings.getCurrentCategory().equals("")) {
-				this.aacMappings.getText(actionCommand);
+				try {
+					this.aacMappings.cur = this.aacMappings.cats.get(this.aacMappings.getText(actionCommand));
+				} catch (KeyNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				this.images = this.aacMappings.getImageLocs();
 				this.startIndex = 0;
 				this.endIndex = Math.min(NUM_ACROSS*NUM_DOWN, this.images.length);
